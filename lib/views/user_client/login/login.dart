@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:montirku_v1/views/user_client/Home.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:montirku_v1/data/api_login.dart';
+import 'package:montirku_v1/views/navigator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+// import 'package:montirku_v1/views/user_client/feature/Home.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -12,9 +18,63 @@ class _Login_1State extends State<Login> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool isPasswordVisible = false;
+
+  Future<void> saveAuthToken(String authToken) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('authToken', authToken);
+  }
+
+  Future<String?> getAuthToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('authToken');
+  }
+
+  Future<void> loginUser() async {
+    const String apiUrl = '${LoginConfig.baseUrl}${LoginConfig.loginEndpoint}';
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'Email': emailController.text,
+          'Password': passwordController.text,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Berhasil login
+        final responseData = json.decode(response.body);
+        final authToken = responseData['Data']
+            ['AuthToken']; // Sesuaikan dengan struktur responsenya
+        await saveAuthToken(authToken);
+        print('Auth Token: $authToken');
+        // Navigasi ke halaman HomeScreen atau lakukan tindakan lain
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const MyNavigator(),
+          ),
+        );
+      } else {
+        // Gagal login, tampilkan pesan atau lakukan tindakan lain
+        print('Login failed. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        // Tambahkan penanganan kesalahan jika diperlukan
+      }
+    } catch (error) {
+      // Tangani kesalahan umum
+      print('Error during login: $error');
+      // Tambahkan penanganan kesalahan jika diperlukan
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFE8FCFA),
+        elevation: 0,
+      ),
       backgroundColor: const Color(0xFFE8FCFA),
       body: SafeArea(
           child: SingleChildScrollView(
@@ -133,7 +193,7 @@ class _Login_1State extends State<Login> {
                 child: TextButton(
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
+                      builder: (context) => const MyNavigator(),
                     ));
                   },
                   child: const Text(
@@ -161,11 +221,7 @@ class _Login_1State extends State<Login> {
                   elevation: 20,
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ),
-                  );
+                  loginUser();
                 },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 45),
@@ -209,7 +265,7 @@ class _Login_1State extends State<Login> {
                       onPressed: () {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
+                            builder: (context) => const MyNavigator(),
                           ),
                         );
                       },
@@ -220,7 +276,7 @@ class _Login_1State extends State<Login> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              'assets/google.png',
+                              'assets/images/google.png',
                               height: 24,
                               width: 24,
                             ),

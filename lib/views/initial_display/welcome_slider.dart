@@ -1,6 +1,6 @@
 //versi ori
 import 'package:flutter/material.dart';
-import 'package:montirku_v1/views/user_client/Home.dart';
+import 'package:montirku_v1/views/user_client/home/Home.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({
@@ -33,7 +33,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Color(0xFFE8FCFA),
+        backgroundColor: const Color(0xFFE8FCFA),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(10),

@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFE8FCFA),
+      backgroundColor: const Color(0xFFE8FCFA),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
               scale: Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
                   parent: _animationController!, curve: Curves.easeOut)),
               child: Image.asset(
-                'assets/Logo.jpeg',
+                'assets/images/Logo.jpeg',
                 height: 250,
                 width: 250,
               ),

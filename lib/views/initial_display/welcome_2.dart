@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:montirku_v1/views/user_client/Home.dart';
+import 'package:montirku_v1/views/user_client/login/onboard.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -16,17 +16,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     WelcomeSlider(
       title: 'Shop All You Want',
       description: 'Description 1',
-      image: 'assets/1.jpeg',
+      image: 'assets/images/1.jpeg',
     ),
     WelcomeSlider(
       title: 'Save time, Order Online',
       description: 'Convenience at your fingertips',
-      image: 'assets/2.jpeg',
+      image: 'assets/images/2.jpeg',
     ),
     WelcomeSlider(
       title: 'The Great Shop Journey',
       description: 'Make a practical choice with voice',
-      image: 'assets/3.jpg',
+      image: 'assets/images/3.jpg',
     ),
   ];
 
@@ -35,7 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Color(0xFFE8FCFA),
+        backgroundColor: const Color(0xFFE8FCFA),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(10),
@@ -94,7 +94,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         width: _currentPage == index ? 30 : 10,
                         decoration: BoxDecoration(
                           color: _currentPage == index
-                              ? Color(0xFF52CBAC)
+                              ? const Color(0xFF52CBAC)
                               : Colors.grey,
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -102,9 +102,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     );
                   }),
                 ),
-                SizedBox(
-                  height: 100,
-                )
+                const SizedBox(height: 100)
               ],
             ),
           ),
@@ -116,7 +114,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               padding: const EdgeInsets.only(left: 20, bottom: 20),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFF52CBAC),
+                  primary: const Color(0xFF52CBAC),
                   shape: RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.circular(50), // Sesuaikan dengan kebutuhan
@@ -126,13 +124,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 onPressed: () {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
+                      builder: (context) => const OnboardingScreen(),
                     ),
                   );
                 },
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 11),
+                child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 11),
                     child: Text(
                       'Skip',
                       style: TextStyle(
@@ -144,7 +141,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               padding: const EdgeInsets.only(bottom: 20),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Color(0xFF008BD0),
+                  primary: const Color(0xFF008BD0),
                   shape: RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.circular(50), // Sesuaikan dengan kebutuhan
@@ -160,7 +157,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   } else {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
+                        builder: (context) => const OnboardingScreen(),
                       ),
                     );
                   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:montirku_v1/views/user_client/Home.dart';
+import 'package:montirku_v1/views/user_client/home/Home.dart';
+import 'package:montirku_v1/views/user_client/login/login.dart';
+import 'package:montirku_v1/views/user_client/register/register.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -12,11 +14,13 @@ class OnboardingScreen extends StatelessWidget {
           child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 55, vertical: 100),
-            child: Image.asset(
-              "assets/3.jpg",
-              height: 300,
-              width: 300,
+            padding: const EdgeInsets.symmetric(vertical: 100),
+            child: Center(
+              child: Image.asset(
+                "assets/images/3.jpg",
+                height: 300,
+                width: 300,
+              ),
             ),
           ),
         ],
@@ -43,15 +47,15 @@ class OnboardingScreen extends StatelessWidget {
                       elevation: 20,
                     ),
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
+                          builder: (context) => const Register(),
                         ),
                       );
                     },
                     child: const Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 47, vertical: 15),
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                         child: Text(
                           'Register',
                           style: TextStyle(
@@ -71,15 +75,15 @@ class OnboardingScreen extends StatelessWidget {
                       elevation: 20,
                     ),
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
+                          builder: (context) => const Login(),
                         ),
                       );
                     },
                     child: const Padding(
                         padding:
-                            EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                            EdgeInsets.symmetric(horizontal: 45, vertical: 15),
                         child: Text("Login")),
                   ),
                 ),
@@ -109,7 +113,7 @@ class OnboardingScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Image.asset(
-                        'assets/google.png',
+                        'assets/images/google.png',
                         height: 24,
                         width: 24,
                       ),

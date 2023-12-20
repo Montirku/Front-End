@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:montirku_v1/views/initial_display/splash_sreen.dart';
+import 'package:montirku_v1/views/user_client/login/onboard.dart';
+// import 'package:montirku_v1/views/navigator.dart';
+// import 'package:montirku_v1/views/user_client/feature_on_head/fhome_services/detail_bengkelv6.dart';
+// import 'package:montirku_v1/views/user_client/feature/fnearby/second_page.dart';
+// import 'package:montirku_v1/views/user_client/home/Home.dart';
 // import 'package:montirku_v1/views/initial_display/welcome_2.dart';
-import 'package:montirku_v1/views/user_client/register/register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,14 +23,13 @@ class _MyWidgetState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Splash Screen',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
-        '/home': (context) => const Register(),
+        '/home': (context) => const OnboardingScreen()
       },
     );
   }

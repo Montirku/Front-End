@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:montirku_v1/views/user_client/Home.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:montirku_v1/data/api_register.dart';
+import 'package:montirku_v1/views/user_client/register/verify copy.dart';
+import 'package:montirku_v1/data/api_send_otp.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -9,9 +13,115 @@ class Register extends StatefulWidget {
 }
 
 class _Register_State extends State<Register> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   bool isPasswordVisible = false;
+  // Tambahkan variabel untuk menangkap status registrasi
+  bool isRegistrationSuccessful = false;
+
+  String registeredEmail = '';
+
+  Future<bool> register() async {
+    const String apiUrl = '${ApiConfig.baseUrl}${ApiConfig.registerEndpoint}';
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'firstName': firstNameController.text,
+          'lastName': lastNameController.text,
+          'email': emailController.text,
+          'password': passwordController.text,
+          'confirmPassword': confirmPasswordController.text,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final String status = responseData['Status'].toString();
+
+        if (status == '200') {
+          // Registrasi berhasil
+          final String id = responseData['Data']['Id'].toString();
+          print('Registrasi berhasil! ID: $id');
+          registeredEmail = emailController.text; // Simpan email
+
+          // Set status registrasi berhasil
+          setState(() {
+            isRegistrationSuccessful = true;
+          });
+
+          // Pindah ke halaman verifikasi email
+          // ignore: use_build_context_synchronously
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Verify(
+                registeredEmail: emailController.text,
+              ),
+            ),
+          );
+
+          return true; // Memberikan indikasi keberhasilan registrasi
+        } else {
+          // Registrasi gagal dengan status lain
+          print('Registrasi gagal. Status code: ${response.statusCode}');
+          print('Response body: ${response.body}');
+          // Tambahkan penanganan kesalahan jika diperlukan
+          return false; // Memberikan indikasi kegagalan registrasi
+        }
+      } else {
+        // Registrasi gagal
+        print('Registrasi gagal. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        // Tambahkan penanganan kesalahan jika diperlukan
+        return false; // Memberikan indikasi kegagalan registrasi
+      }
+    } catch (error) {
+      // Tangani kesalahan umum
+      print('Error during registration: $error');
+      return false; // Memberikan indikasi kegagalan registrasi
+    }
+  }
+
+  Future<void> verifyEmail() async {
+    const String apiUrl =
+        '${ApiVerifyConfig.baseUrl}${ApiVerifyConfig.verifyEndpoint}';
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': registeredEmail, // Menggunakan email yang sudah terdaftar
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        final String status = responseData['Status'].toString();
+
+        if (status == '200') {
+        } else {
+          // Tampilkan pesan kesalahan verifikasi email
+          print('Verifikasi email gagal. Status code: $status');
+        }
+      } else {
+        // Tampilkan pesan kesalahan verifikasi email
+        print('Verifikasi email gagal. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (error) {
+      // Tangani kesalahan umum
+      print('Error selama verifikasi email: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +129,9 @@ class _Register_State extends State<Register> {
         backgroundColor: const Color(0xFFE8FCFA),
         elevation: 0,
         leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pop(context);
+            },
             icon: const Icon(
               Icons.arrow_back,
               color: Colors.black,
@@ -66,7 +178,7 @@ class _Register_State extends State<Register> {
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: TextFormField(
-                          controller: emailController,
+                          controller: firstNameController,
                           decoration: InputDecoration(
                             hintText: 'Jhon',
                             filled: true,
@@ -113,7 +225,7 @@ class _Register_State extends State<Register> {
                     Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: TextFormField(
-                          controller: emailController,
+                          controller: lastNameController,
                           decoration: InputDecoration(
                             hintText: 'Doe',
                             filled: true,
@@ -269,7 +381,7 @@ class _Register_State extends State<Register> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TextFormField(
                   obscureText: !isPasswordVisible,
-                  controller: passwordController,
+                  controller: confirmPasswordController,
                   decoration: InputDecoration(
                     hintText: 'Enter your password',
                     filled: true,
@@ -314,12 +426,14 @@ class _Register_State extends State<Register> {
                   ),
                   elevation: 20,
                 ),
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ),
-                  );
+                onPressed: () async {
+                  // Panggil fungsi register saat tombol ditekan
+                  bool registrationSuccess = await register();
+
+                  // Jika registrasi berhasil, lanjutkan dengan verifikasi email
+                  if (registrationSuccess) {
+                    await verifyEmail();
+                  }
                 },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 45),
